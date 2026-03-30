@@ -10,6 +10,16 @@ private:
     unsigned long n;
     unsigned long capacidad;
 
+    unsigned long siguiente_potencia(unsigned long x){
+        if(x == 0){
+            return 0;
+        }
+        unsigned long p = 1;
+        while(p < x){
+            p =* 2;
+        }
+        return p;
+
     void redimensionar(unsigned long nuevaCapacidad) {
         int* nuevo = new int[nuevaCapacidad];
 
@@ -85,6 +95,7 @@ void leerArchivo(ArregloExtensible &arr, string nombre) {
     }
 
     file.close();
+    cout << "Archivo leído correctamente" << endl;
 }
 
 // menu de opciones
@@ -151,6 +162,3 @@ int main() {
 
     return 0;
 }
-
-
-// prueba
