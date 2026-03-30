@@ -11,13 +11,9 @@ private:
     unsigned long capacidad;
 
     unsigned long siguiente_potencia(unsigned long x){
-        if(x == 0){
-            return 0;
-        }
+        if(x == 0) return 0;
         unsigned long p = 1;
-        while(p < x){
-            p *= 2;
-        }
+        while(p < x) p *= 2;
         return p;
     }
 
@@ -40,30 +36,29 @@ public:
         capacidad = 0;
     }
 
-    ArrelgloExtensible(unsigned long inicial_n){
-        n = inicial_n;
-        capacidad = sigiuente_potencia(n);
-        if(capacidad > 0){
-            B = new int[capacidad];
-        }
-        else{
-            B = NULL;
-        }
-    }
-
-    ArregloExtensible(unsigned long inicial_m, int v){
+    ArregloExtensible(unsigned long inicial_n){
         n = inicial_n;
         capacidad = siguiente_potencia(n);
+
+        if(capacidad > 0)
+            B = new int[capacidad];
+        else
+            B = NULL;
+    }
+
+    ArregloExtensible(unsigned long inicial_n, int v){
+        n = inicial_n;
+        capacidad = siguiente_potencia(n);
+
         if(capacidad > 0){
             B = new int[capacidad];
             for(unsigned long i = 0; i < n; i++){
                 B[i] = v;
             }
-        }
-        else{
+        } else {
             B = NULL;
-        ]
-    ]
+        }
+    }
 
     ~ArregloExtensible() {
         delete[] B;
@@ -106,7 +101,17 @@ public:
     }
 };
 
-// leer archivo y llenar arreglo
+// función segura para leer enteros
+bool leerEntero(int &x) {
+    if (!(cin >> x)) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        return false;
+    }
+    return true;
+}
+
+// leer archivo
 void leerArchivo(ArregloExtensible &arr, string nombre) {
     ifstream file(nombre);
 
@@ -124,7 +129,7 @@ void leerArchivo(ArregloExtensible &arr, string nombre) {
     cout << "Archivo leído correctamente" << endl;
 }
 
-// menu de opciones
+// menu
 void menu() {
     cout << "\n1. Append\n";
     cout << "2. Remove\n";
@@ -149,13 +154,20 @@ int main() {
     do {
         menu();
         cout << "Opcion: ";
-        cin >> opcion;
+
+        if (!leerEntero(opcion)) {
+            cout << "Entrada invalida\n";
+            continue;
+        }
 
         if (opcion == 1) {
             int v;
             cout << "Valor: ";
-            cin >> v;
-            arr.append(v);
+            if (leerEntero(v)) {
+                arr.append(v);
+            } else {
+                cout << "Entrada invalida\n";
+            }
         }
 
         else if (opcion == 2) {
@@ -163,20 +175,24 @@ int main() {
         }
 
         else if (opcion == 3) {
-            unsigned long i;
+            int i;
             cout << "Indice: ";
-            cin >> i;
-            cout << arr.getValue(i) << endl;
+            if (leerEntero(i)) {
+                cout << arr.getValue(i) << endl;
+            } else {
+                cout << "Entrada invalida\n";
+            }
         }
 
         else if (opcion == 4) {
-            unsigned long i;
-            int v;
+            int i, v;
             cout << "Indice y valor: ";
-            cin >> i >> v;
-
-            if (!arr.setValue(i, v)) {
-                cout << "Indice invalido" << endl;
+            if (leerEntero(i) && leerEntero(v)) {
+                if (!arr.setValue(i, v)) {
+                    cout << "Indice invalido\n";
+                }
+            } else {
+                cout << "Entrada invalida\n";
             }
         }
 
