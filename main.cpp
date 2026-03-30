@@ -16,9 +16,10 @@ private:
         }
         unsigned long p = 1;
         while(p < x){
-            p =* 2;
+            p *= 2;
         }
         return p;
+    }
 
     void redimensionar(unsigned long nuevaCapacidad) {
         int* nuevo = new int[nuevaCapacidad];
