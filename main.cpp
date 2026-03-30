@@ -40,6 +40,31 @@ public:
         capacidad = 0;
     }
 
+    ArrelgloExtensible(unsigned long inicial_n){
+        n = inicial_n;
+        capacidad = sigiuente_potencia(n);
+        if(capacidad > 0){
+            B = new int[capacidad];
+        }
+        else{
+            B = NULL;
+        }
+    }
+
+    ArregloExtensible(unsigned long inicial_m, int v){
+        n = inicial_n;
+        capacidad = siguiente_potencia(n);
+        if(capacidad > 0){
+            B = new int[capacidad];
+            for(unsigned long i = 0; i < n; i++){
+                B[i] = v;
+            }
+        }
+        else{
+            B = NULL;
+        ]
+    ]
+
     ~ArregloExtensible() {
         delete[] B;
     }
