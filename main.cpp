@@ -4,7 +4,7 @@
 using namespace std;
 
 // clase de arreglo extensible
-class ArregloExtensible {
+class arr_extensible {
 private:
     int* B;
     unsigned long n;
@@ -30,13 +30,13 @@ private:
     }
 
 public:
-    ArregloExtensible() {
+    arr_extensible() {
         B = NULL;
         n = 0;
         capacidad = 0;
     }
 
-    ArregloExtensible(unsigned long inicial_n){
+    arr_extensible(unsigned long inicial_n){
         n = inicial_n;
         capacidad = siguiente_potencia(n);
 
@@ -46,7 +46,7 @@ public:
             B = NULL;
     }
 
-    ArregloExtensible(unsigned long inicial_n, int v){
+    arr_extensible(unsigned long inicial_n, int v){
         n = inicial_n;
         capacidad = siguiente_potencia(n);
 
@@ -60,7 +60,7 @@ public:
         }
     }
 
-    ~ArregloExtensible() {
+    ~arr_extensible() {
         delete[] B;
     }
 
@@ -112,7 +112,7 @@ bool leerEntero(int &x) {
 }
 
 // leer archivo
-void leerArchivo(ArregloExtensible &arr, string nombre) {
+void leerArchivo(arr_extensible &arr, string nombre) {
     ifstream file(nombre);
 
     if (!file) {
@@ -141,7 +141,7 @@ void menu() {
 
 // main
 int main() {
-    ArregloExtensible arr;
+    arr_extensible arr;
     string archivo;
 
     cout << "Ingrese nombre del archivo: ";
@@ -178,7 +178,11 @@ int main() {
             int i;
             cout << "Indice: ";
             if (leerEntero(i)) {
-                cout << arr.getValue(i) << endl;
+                if (i < 0) {
+                    cout << "Indice invalido\n";
+                } else {
+                    cout << arr.getValue((unsigned long)i) << endl;
+                }
             } else {
                 cout << "Entrada invalida\n";
             }
@@ -188,7 +192,9 @@ int main() {
             int i, v;
             cout << "Indice y valor: ";
             if (leerEntero(i) && leerEntero(v)) {
-                if (!arr.setValue(i, v)) {
+                if (i < 0) {
+                    cout << "Indice invalido\n";
+                } else if (!arr.setValue((unsigned long)i, v)) {
                     cout << "Indice invalido\n";
                 }
             } else {
