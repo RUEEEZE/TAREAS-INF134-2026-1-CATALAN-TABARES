@@ -121,7 +121,49 @@ public:
 
     void eliminar(int posicion);
 
-    void concatenar(Linea* linea);
+    int Linea::largoSubarbol(Nodo* nodo)
+{
+        if(nodo == nullptr)
+            return 0;
+
+        // nodo hoja
+        if(nodo->izquierda == nullptr && nodo->derecha == nullptr)
+            return nodo->texto.length();
+
+        return largoSubarbol(nodo->izquierda) +
+            largoSubarbol(nodo->derecha);
+    }
+
+    void concatenar(Linea* linea){
+        if(linea == nullptr || linea->raiz == nullptr)
+            return;
+
+        if(this->raiz == nullptr)
+        {
+            this->raiz = linea->raiz;
+            linea->raiz = nullptr;
+            return;
+        }
+
+        Nodo* nuevaRaiz = new Nodo;
+
+        nuevaRaiz->izquierda = this->raiz;
+        nuevaRaiz->derecha = linea->raiz;
+
+        nuevaRaiz->padre = nullptr;
+
+        nuevaRaiz->texto = "";
+
+        nuevaRaiz->peso = largoSubarbol(this->raiz);
+
+        this->raiz->padre = nuevaRaiz;
+        linea->raiz->padre = nuevaRaiz;
+
+        this->raiz = nuevaRaiz;
+
+        // evitar double free
+        linea->raiz = nullptr;
+    }
 
     void invertir(void);
 
