@@ -188,10 +188,17 @@ public:
         linea->raiz = nullptr;
     }
 
-    void invertir(void);
+    //Función para invertir todo el texto de la estructura
+    void invertir(void){
+        invertirRecursivo(raiz);
+    }
 
-    int print(void);
-};
+    int print(void){
+        int caracteresImpresos = 0;
+        imprimirNodos(raiz, caracteresImpresos);
+        std::cout << std::endl;
+        return caracteresImpresos;
+}
 
 using namespace std;
 
