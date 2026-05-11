@@ -56,7 +56,6 @@ public:
 
     // Función auxiliar para destruir el árbol de nodos
     void Linea::destruir(Nodo* nodo) {
-
         if (nodo == NULL){
             return;
         }
@@ -119,7 +118,31 @@ public:
         }
     }
 
-    void eliminar(int posicion);
+    // Función para eliminar un caracter en una posición dada
+    void eliminar(int posicion){
+        Nodo* actual = raiz;
+        
+        while (actual->izquierda || actual->derecha) {
+            if (posicion <= actual->peso && actual->izquierda) {
+                actual->peso--; 
+                actual = actual->izquierda;
+            } else {
+                posicion -= actual->peso;
+                actual = actual->derecha;
+            }
+        }
+
+        if (posicion >= 0 && posicion < actual->texto.length()) {
+            std::string nuevoTexto = "";
+            for (int i = 0; i < actual->texto.length(); i++) {
+                if (i != posicion) {
+                    nuevoTexto += actual->texto[i];
+                }
+            }
+            actual->texto = nuevoTexto;
+            actual->peso--;
+        }
+    }
 
     int Linea::largoSubarbol(Nodo* nodo)
 {
