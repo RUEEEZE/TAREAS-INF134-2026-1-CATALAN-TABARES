@@ -1,0 +1,8 @@
+all:
+	g++ main.cpp Linea.cpp -o tarea2
+
+run:
+	./tarea2
+
+clean:
+	rm -f tarea2
