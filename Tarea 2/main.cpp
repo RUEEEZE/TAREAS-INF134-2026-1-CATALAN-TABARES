@@ -45,20 +45,21 @@ public:
     unsigned int obtenerPesoTotal(Nodo* nodo){
         if (nodo == NULL){
             return 0;
-        };
+        }
         if (nodo->izquierda == NULL && nodo->derecha == NULL){
             return nodo->peso;
-        };
+        }
         return obtenerPesoTotal(nodo->izquierda) + obtenerPesoTotal(nodo->derecha);
-    };
+    }
 
     Linea(std::string str, int w);
 
     // Función auxiliar para destruir el árbol de nodos
     void Linea::destruir(Nodo* nodo) {
 
-        if (nodo == NULL)
+        if (nodo == NULL){
             return;
+        }
 
         destruir(nodo->izquierda);
 
@@ -74,8 +75,49 @@ public:
 
     ~Linea(void);
 
+    //Función para agregar un nuevo caracter en una posición dada
+    void insertar(int posicion, char caracter){
+        Nodo* actual = raiz;
 
-    void insertar(int posicion, char caracter);
+        while (actual->izquierda || actual->derecha){
+             if (posicion <= actual->peso && actual->izquierda) {
+                actual->peso++; 
+                actual = actual->izquierda;
+            } 
+             else{
+                posicion -= actual->peso;
+                actual = actual->derecha;
+            }
+        }
+
+        std::string nuevoTexto = "";
+        for (int i = 0; i < actual->texto.length(); i++) {
+            if (i == posicion) nuevoTexto += caracter;
+            nuevoTexto += actual->texto[i];
+        }
+        if (posicion == actual->texto.length()) {
+            nuevoTexto += caracter;
+        }
+        actual->texto = nuevoTexto;
+        actual->peso++;
+
+        if (actual->texto.length() > w) {
+            std::string textoCompleto = actual->texto;
+            actual->texto = "";
+            
+            int mitad = textoCompleto.length() / 2;
+            
+            Nodo* hijoIzq = crearHoja(textoCompleto.substr(0, mitad));
+            hijoIzq->padre = actual;
+
+            Nodo* hijoDer = crearHoja(textoCompleto.substr(mitad));
+            hijoDer->padre = actual;
+
+            actual->izquierda = hijoIzq;
+            actual->derecha = hijoDer;
+            actual->peso = hijoIzq->peso;
+        }
+    }
 
     void eliminar(int posicion);
 
