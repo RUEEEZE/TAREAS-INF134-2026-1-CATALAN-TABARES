@@ -2,16 +2,12 @@
 #include "Linea.h"
 #include <string>
 
-class Linea {
-
+class Linea{
 private:
-
-    struct Nodo {
-
+    struct Nodo{
         Nodo* izquierda;
         Nodo* derecha;
         Nodo* padre;
-
         std::string texto;
         unsigned int peso;
     };
@@ -22,52 +18,39 @@ private:
 public:
 
     // Función auxiliar para crear un nodo hoja con el texto dado
-    Nodo* crearHoja(string texto) {
-
+    Nodo* crearHoja(string texto){
         Nodo* nuevo = new Nodo;
-
         nuevo->izquierda = NULL;
         nuevo->derecha = NULL;
         nuevo->padre = NULL;
-
         nuevo->texto = texto;
         nuevo->peso = texto.length();
-
         return nuevo;
     }
 
     // Función auxiliar para unir dos nodos y crear un nodo padre
-    Nodo* unir(Nodo* izquierda, Nodo* derecha) {
-
+    Nodo* unir(Nodo* izquierda, Nodo* derecha){
         Nodo* padre = new Nodo;
-
         padre->izquierda = izquierda;
         padre->derecha = derecha;
         padre->padre = NULL;
-
         izquierda->padre = padre;
         derecha->padre = padre;
-
         padre->texto = "";
-
         padre->peso = obtenerPesoTotal(izquierda);
-
         return padre;
     }
 
     // Función auxiliar para calcular el peso total de un nodo (suma de los pesos de sus hojas)
-    int obtenerPesoTotal(Nodo* nodo) {
-
-        if (nodo == NULL)
+    unsigned int obtenerPesoTotal(Nodo* nodo){
+        if (nodo == NULL){
             return 0;
-
-        if (nodo->izquierda == NULL &&
-            nodo->derecha == NULL)
+        };
+        if (nodo->izquierda == NULL && nodo->derecha == NULL){
             return nodo->peso;
-
-        return obtenerPesoTotal(nodo->izquierda)
-            + obtenerPesoTotal(nodo->derecha);
-    }
+        };
+        return obtenerPesoTotal(nodo->izquierda) + obtenerPesoTotal(nodo->derecha);
+    };
 
     Linea(std::string str, int w);
 
