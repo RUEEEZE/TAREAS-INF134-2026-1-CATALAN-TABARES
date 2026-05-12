@@ -52,7 +52,12 @@ public:
         return obtenerPesoTotal(nodo->izquierda) + obtenerPesoTotal(nodo->derecha);
     }
 
-    Linea(std::string str, int w);
+    Linea(std::string str, int w){
+
+        this->w = w;
+
+        raiz = crearHoja(str);
+    }
 
     // Función auxiliar para destruir el árbol de nodos
     void destruir(Nodo* nodo) {
@@ -67,7 +72,7 @@ public:
         delete nodo;
     }
 
-    Linea::~Linea() {
+    ~Linea() {
 
         destruir(raiz);
     }
@@ -78,7 +83,7 @@ public:
         Nodo* actual = raiz;
 
         while (actual->izquierda || actual->derecha){
-             if (posicion <= actual->peso && actual->izquierda) {
+             if (posicion < actual->peso && actual->izquierda) {
                 actual->peso++; 
                 actual = actual->izquierda;
             } 
@@ -143,8 +148,7 @@ public:
         }
     }
 
-    int largoSubarbol(Nodo* nodo)
-{
+    int largoSubarbol(Nodo* nodo){
         if(nodo == nullptr)
             return 0;
 
@@ -186,7 +190,7 @@ public:
 
             std::string invertido = "";
 
-            for(int i = nodo->texto.length() - 1; i >= 0; i--){
+            for(int i = (int)nodo->texto.length() - 1; i >= 0; i--){
                 invertido += nodo->texto[i];
             }
 
@@ -245,8 +249,8 @@ public:
         std::cout << std::endl;
         return caracteresImpresos;
     }
+};
 
-using namespace std;
 
 
 void mostrarMenu() {
@@ -262,7 +266,7 @@ void mostrarMenu() {
 
 int main() {
 
-    string textoInicial;
+    std::string textoInicial;
     int w;
 
     cout << "Ingrese texto inicial: ";
@@ -329,7 +333,7 @@ int main() {
 
             cin.ignore();
 
-            string nuevoTexto;
+            std::string nuevoTexto;
 
             cout << "Texto a concatenar: ";
             getline(cin, nuevoTexto);
@@ -354,3 +358,4 @@ int main() {
 
     return 0;
 }
+
