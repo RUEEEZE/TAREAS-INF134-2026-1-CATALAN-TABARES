@@ -1,5 +1,4 @@
 #include <iostream>
-#include "Linea.h"
 #include <string>
 
 class Linea{
@@ -9,6 +8,7 @@ private:
         Nodo* derecha;
         Nodo* padre;
         std::string texto;
+    
         unsigned int peso;
     };
 
@@ -18,7 +18,7 @@ private:
 public:
 
     // Función auxiliar para crear un nodo hoja con el texto dado
-    Nodo* crearHoja(string texto){
+    Nodo* crearHoja(std::string texto){
         Nodo* nuevo = new Nodo;
         nuevo->izquierda = NULL;
         nuevo->derecha = NULL;
@@ -55,7 +55,7 @@ public:
     Linea(std::string str, int w);
 
     // Función auxiliar para destruir el árbol de nodos
-    void Linea::destruir(Nodo* nodo) {
+    void destruir(Nodo* nodo) {
         if (nodo == NULL){
             return;
         }
@@ -72,7 +72,6 @@ public:
         destruir(raiz);
     }
 
-    ~Linea(void);
 
     //Función para agregar un nuevo caracter en una posición dada
     void insertar(int posicion, char caracter){
@@ -123,7 +122,7 @@ public:
         Nodo* actual = raiz;
         
         while (actual->izquierda || actual->derecha) {
-            if (posicion <= actual->peso && actual->izquierda) {
+            if (posicion < actual->peso && actual->izquierda) {
                 actual->peso--; 
                 actual = actual->izquierda;
             } else {
@@ -144,7 +143,7 @@ public:
         }
     }
 
-    int Linea::largoSubarbol(Nodo* nodo)
+    int largoSubarbol(Nodo* nodo)
 {
         if(nodo == nullptr)
             return 0;
@@ -157,12 +156,59 @@ public:
             largoSubarbol(nodo->derecha);
     }
 
+    void imprimirNodos(Nodo* nodo, int& caracteresImpresos){
+
+        if(nodo == nullptr){
+            return;
+        }
+
+        // si es hoja
+        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
+
+           std::cout << nodo->texto;
+            caracteresImpresos += nodo->texto.length();
+            return;
+        }
+
+        imprimirNodos(nodo->izquierda, caracteresImpresos);
+
+        imprimirNodos(nodo->derecha, caracteresImpresos);
+    }
+
+    void invertirRecursivo(Nodo* nodo){
+
+        if(nodo == nullptr){
+            return;
+        }
+
+        // nodo hoja
+        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
+
+            std::string invertido = "";
+
+            for(int i = nodo->texto.length() - 1; i >= 0; i--){
+                invertido += nodo->texto[i];
+            }
+
+            nodo->texto = invertido;
+            return;
+        }
+
+        invertirRecursivo(nodo->izquierda);
+        invertirRecursivo(nodo->derecha);
+
+        // intercambiar hijos
+        Nodo* temp = nodo->izquierda;
+        nodo->izquierda = nodo->derecha;
+        nodo->derecha = temp;
+    }
+
+
     void concatenar(Linea* linea){
         if(linea == nullptr || linea->raiz == nullptr)
             return;
 
-        if(this->raiz == nullptr)
-        {
+        if(this->raiz == nullptr){
             this->raiz = linea->raiz;
             linea->raiz = nullptr;
             return;
@@ -198,7 +244,7 @@ public:
         imprimirNodos(raiz, caracteresImpresos);
         std::cout << std::endl;
         return caracteresImpresos;
-}
+    }
 
 using namespace std;
 
