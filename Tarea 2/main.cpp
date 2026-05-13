@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+include namespace std
 
 class Linea{
 private:
@@ -17,7 +18,17 @@ private:
 
 public:
 
-    // Función auxiliar para crear un nodo hoja con el texto dado
+    /*****
+    * Nodo* crearHoja
+    ******
+    * Crea un nuevo nodo hoja inicializando sus punteros en NULL y asignando el texto y peso.
+    ******
+    * Input:
+    * std::string texto : Cadena de caracteres que almacenará el nodo hoja.
+    ******
+    * Returns:
+    * Nodo*, Puntero al nuevo nodo creado.
+    *****/
     Nodo* crearHoja(std::string texto){
         Nodo* nuevo = new Nodo;
         nuevo->izquierda = NULL;
@@ -28,7 +39,18 @@ public:
         return nuevo;
     }
 
-    // Función auxiliar para unir dos nodos y crear un nodo padre
+    /*****
+    * Nodo* unir
+    ******
+    * Une dos nodos existentes bajo un nuevo nodo padre, actualizando los punteros y calculando el peso total.
+    ******
+    * Input:
+    * Nodo* izquierda : Puntero al nodo que será el hijo izquierdo.
+    * Nodo* derecha : Puntero al nodo que será el hijo derecho.
+    ******
+    * Returns:
+    * Nodo*, Puntero al nuevo nodo padre creado.
+    *****/
     Nodo* unir(Nodo* izquierda, Nodo* derecha){
         Nodo* padre = new Nodo;
         padre->izquierda = izquierda;
@@ -41,7 +63,17 @@ public:
         return padre;
     }
 
-    // Función auxiliar para calcular el peso total de un nodo (suma de los pesos de sus hojas)
+    /*****
+    * unsigned int obtenerPesoTotal
+    ******
+    * Calcula recursivamente el peso total de un subárbol sumando los pesos de sus nodos hoja.
+    ******
+    * Input:
+    * Nodo* nodo : Puntero al nodo raíz del subárbol a evaluar.
+    ******
+    * Returns:
+    * unsigned int, Suma total de los pesos del subárbol.
+    *****/
     unsigned int obtenerPesoTotal(Nodo* nodo){
         if (nodo == NULL){
             return 0;
@@ -52,33 +84,71 @@ public:
         return obtenerPesoTotal(nodo->izquierda) + obtenerPesoTotal(nodo->derecha);
     }
 
+    /*****
+    * Linea Linea
+    ******
+    * Constructor que inicializa el árbol con una cadena de texto y establece el límite de tamaño w.
+    ******
+    * Input:
+    * std::string str : Cadena de texto inicial para el árbol.
+    * int w : Peso máximo permitido para los nodos hoja.
+    ******
+    * Returns:
+    * void, No aplica retorno para constructores.
+    *****/
     Linea(std::string str, int w){
-
         this->w = w;
-
         raiz = crearHoja(str);
     }
 
-    // Función auxiliar para destruir el árbol de nodos
+    /*****
+    * void destruir
+    ******
+    * Función auxiliar que libera recursivamente la memoria dinámica de los nodos de un subárbol.
+    ******
+    * Input:
+    * Nodo* nodo : Puntero al nodo a partir del cual se destruirá el árbol.
+    ******
+    * Returns:
+    * void, No retorna valor.
+    *****/
     void destruir(Nodo* nodo) {
         if (nodo == NULL){
             return;
         }
-
         destruir(nodo->izquierda);
-
         destruir(nodo->derecha);
-
         delete nodo;
     }
 
-    ~Linea() {
-
+    /*****
+    * Linea Linea
+    ******
+    * Constructor que inicializa el árbol con una cadena de texto y establece el límite de tamaño w.
+    ******
+    * Input:
+    * std::string str : Cadena de texto inicial para el árbol.
+    * int w : Peso máximo permitido para los nodos hoja.
+    ******
+    * Returns:
+    * void, No aplica retorno para constructores.
+    *****/
+    ~Linea(){
         destruir(raiz);
     }
 
-
-    //Función para agregar un nuevo caracter en una posición dada
+    /*****
+    * void insertar
+    ******
+    * Inserta un carácter en una posición específica. Si el nodo hoja excede w, el nodo se divide.
+    ******
+    * Input:
+    * int posicion : Índice numérico donde se insertará el nuevo carácter.
+    * char caracter : Carácter a insertar en el texto.
+    ******
+    * Returns:
+    * void, No retorna valor.
+    *****/
     void insertar(int posicion, char caracter){
         Nodo* actual = raiz;
 
@@ -122,7 +192,17 @@ public:
         }
     }
 
-    // Función para eliminar un caracter en una posición dada
+    /*****
+    * void eliminar
+    ******
+    * Elimina el carácter ubicado en una posición específica del árbol y actualiza los pesos de la ruta.
+    ******
+    * Input:
+    * int posicion : Índice numérico del carácter que se desea eliminar.
+    ******
+    * Returns:
+    * void, No retorna valor.
+    *****/
     void eliminar(int posicion){
         Nodo* actual = raiz;
         
@@ -130,16 +210,17 @@ public:
             if (posicion < actual->peso && actual->izquierda) {
                 actual->peso--; 
                 actual = actual->izquierda;
-            } else {
+            } 
+            else{
                 posicion -= actual->peso;
                 actual = actual->derecha;
             }
         }
 
-        if (posicion >= 0 && posicion < actual->texto.length()) {
+        if (posicion >= 0 && posicion < actual->texto.length()){
             std::string nuevoTexto = "";
-            for (int i = 0; i < actual->texto.length(); i++) {
-                if (i != posicion) {
+            for (int i = 0; i < actual->texto.length(); i++){
+                if (i != posicion){
                     nuevoTexto += actual->texto[i];
                 }
             }
@@ -148,52 +229,82 @@ public:
         }
     }
 
+    /*****
+    * int largoSubarbol
+    ******
+    * Calcula la longitud total del texto contenido en todas las hojas de un subárbol dado.
+    ******
+    * Input:
+    * Nodo* nodo : Puntero al nodo raíz del subárbol.
+    ******
+    * Returns:
+    * int, Cantidad total de caracteres en el subárbol.
+    *****/
     int largoSubarbol(Nodo* nodo){
-        if(nodo == nullptr)
+        if(nodo == nullptr){
             return 0;
-
+        }
+        
         // nodo hoja
-        if(nodo->izquierda == nullptr && nodo->derecha == nullptr)
+        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
             return nodo->texto.length();
+        }
 
         return largoSubarbol(nodo->izquierda) +
             largoSubarbol(nodo->derecha);
     }
 
+   /*****
+    * void imprimirNodos
+    ******
+    * Recorre el árbol recursivamente para imprimir el texto de las hojas y contar los caracteres.
+    ******
+    * Input:
+    * Nodo* nodo : Puntero al nodo actual en el recorrido.
+    * int& caracteresImpresos : Referencia al contador de caracteres impresos.
+    ******
+    * Returns:
+    * void, No retorna valor.
+    *****/ 
     void imprimirNodos(Nodo* nodo, int& caracteresImpresos){
-
         if(nodo == nullptr){
             return;
         }
 
         // si es hoja
         if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
-
            std::cout << nodo->texto;
             caracteresImpresos += nodo->texto.length();
             return;
         }
 
         imprimirNodos(nodo->izquierda, caracteresImpresos);
-
         imprimirNodos(nodo->derecha, caracteresImpresos);
     }
 
+    /*****
+    * void invertirRecursivo
+    ******
+    * Recorre el árbol para invertir el texto de cada hoja y luego intercambia los hijos de cada nodo.
+    ******
+    * Input:
+    * Nodo* nodo : Puntero al nodo actual a procesar.
+    ******
+    * Returns:
+    * void, No retorna valor.
+    *****/
     void invertirRecursivo(Nodo* nodo){
-
         if(nodo == nullptr){
             return;
         }
 
         // nodo hoja
         if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
-
             std::string invertido = "";
-
+            
             for(int i = (int)nodo->texto.length() - 1; i >= 0; i--){
                 invertido += nodo->texto[i];
             }
-
             nodo->texto = invertido;
             return;
         }
@@ -207,7 +318,17 @@ public:
         nodo->derecha = temp;
     }
 
-
+    /*****
+    * void concatenar
+    ******
+    * Une la estructura actual con un árbol Linea proporcionado, agregándolo como hijo derecho en una nueva raíz.
+    ******
+    * Input:
+    * Linea* linea : Puntero al objeto Linea que se concatenará al final.
+    ******
+    * Returns:
+    * void, No retorna valor.
+    *****/
     void concatenar(Linea* linea){
         if(linea == nullptr || linea->raiz == nullptr)
             return;
@@ -238,11 +359,33 @@ public:
         linea->raiz = nullptr;
     }
 
-    //Función para invertir todo el texto de la estructura
+    /*****
+    * void invertir
+    ******
+    * Invierte todo el texto de la estructura utilizando la función auxiliar invertirRecursivo desde la raíz.
+    ******
+    * Input:
+    * Sin parámetros.
+    ******
+    * Returns:
+    * void, No retorna valor.
+    *****/
     void invertir(void){
         invertirRecursivo(raiz);
     }
 
+    /*****
+    * int print
+    ******
+    *
+    * Imprime la cadena de texto completa almacenada en el árbol de izquierda a derecha.
+    ******
+    * Input:
+    * Sin parámetros.
+    ******
+    * Returns:
+    * int, Cantidad total de caracteres impresos.
+    *****/
     int print(void){
         int caracteresImpresos = 0;
         imprimirNodos(raiz, caracteresImpresos);
@@ -264,11 +407,9 @@ void mostrarMenu() {
     cout << "Seleccione una opcion: ";
 }
 
-int main() {
-
+int main(){
     std::string textoInicial;
     int w;
-
     cout << "Ingrese texto inicial: ";
     getline(cin, textoInicial);
 
@@ -278,24 +419,19 @@ int main() {
     cin.ignore();
 
     Linea linea(textoInicial, w);
-
     int opcion = -1;
-
-    while (opcion != 0) {
-
+    
+    while (opcion != 0){
         mostrarMenu();
         cin >> opcion;
-
-        if (opcion == 1) {
-
+        
+        if (opcion == 1){
             cout << "\nContenido actual:" << endl;
             linea.print();
             cout << endl;
-
         }
 
-        else if (opcion == 2) {
-
+        else if (opcion == 2){
             int posicion;
             char caracter;
 
@@ -306,33 +442,26 @@ int main() {
             cin >> caracter;
 
             linea.insertar(posicion, caracter);
-
             cout << "Caracter insertado." << endl;
         }
 
-        else if (opcion == 3) {
-
+        else if (opcion == 3){
             int posicion;
 
             cout << "Posicion a eliminar: ";
             cin >> posicion;
 
             linea.eliminar(posicion);
-
             cout << "Caracter eliminado." << endl;
         }
 
-        else if (opcion == 4) {
-
+        else if (opcion == 4){
             linea.invertir();
-
             cout << "Linea invertida." << endl;
         }
 
-        else if (opcion == 5) {
-
+        else if (opcion == 5){
             cin.ignore();
-
             std::string nuevoTexto;
 
             cout << "Texto a concatenar: ";
@@ -341,21 +470,18 @@ int main() {
             Linea* nuevaLinea = new Linea(nuevoTexto, w);
 
             linea.concatenar(nuevaLinea);
-
             cout << "Concatenacion realizada." << endl;
         }
 
-        else if (opcion == 0) {
-
+        else if (opcion == 0){
             cout << "Saliendo..." << endl;
         }
 
-        else {
-
+        else{
             cout << "Opcion invalida." << endl;
         }
     }
-
+    
     return 0;
 }
 
