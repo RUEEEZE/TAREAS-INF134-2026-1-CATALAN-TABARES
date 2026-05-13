@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-include namespace std
+include namespace std;
 
 class Linea{
 private:
@@ -9,14 +9,11 @@ private:
         Nodo* derecha;
         Nodo* padre;
         std::string texto;
-    
         unsigned int peso;
     };
 
     Nodo* raiz;
     int w;
-
-public:
 
     /*****
     * Nodo* crearHoja
@@ -37,30 +34,6 @@ public:
         nuevo->texto = texto;
         nuevo->peso = texto.length();
         return nuevo;
-    }
-
-    /*****
-    * Nodo* unir
-    ******
-    * Une dos nodos existentes bajo un nuevo nodo padre, actualizando los punteros y calculando el peso total.
-    ******
-    * Input:
-    * Nodo* izquierda : Puntero al nodo que será el hijo izquierdo.
-    * Nodo* derecha : Puntero al nodo que será el hijo derecho.
-    ******
-    * Returns:
-    * Nodo*, Puntero al nuevo nodo padre creado.
-    *****/
-    Nodo* unir(Nodo* izquierda, Nodo* derecha){
-        Nodo* padre = new Nodo;
-        padre->izquierda = izquierda;
-        padre->derecha = derecha;
-        padre->padre = NULL;
-        izquierda->padre = padre;
-        derecha->padre = padre;
-        padre->texto = "";
-        padre->peso = obtenerPesoTotal(izquierda);
-        return padre;
     }
 
     /*****
@@ -85,20 +58,51 @@ public:
     }
 
     /*****
-    * Linea Linea
+    * Nodo* unir
     ******
-    * Constructor que inicializa el árbol con una cadena de texto y establece el límite de tamaño w.
+    * Une dos nodos existentes bajo un nuevo nodo padre, actualizando los punteros y calculando el peso total.
     ******
     * Input:
-    * std::string str : Cadena de texto inicial para el árbol.
-    * int w : Peso máximo permitido para los nodos hoja.
+    * Nodo* izquierda : Puntero al nodo que será el hijo izquierdo.
+    * Nodo* derecha : Puntero al nodo que será el hijo derecho.
     ******
     * Returns:
-    * void, No aplica retorno para constructores.
+    * Nodo*, Puntero al nuevo nodo padre creado.
     *****/
-    Linea(std::string str, int w){
-        this->w = w;
-        raiz = crearHoja(str);
+    Nodo* unir(Nodo* izquierda, Nodo* derecha){
+        Nodo* padre = new Nodo;
+        padre->izquierda = izquierda;
+        padre->derecha = derecha;
+        padre->padre = NULL;
+        
+        if (izquierda) izquierda->padre = padre;
+        if (derecha) derecha->padre = padre;
+        
+        padre->texto = "";
+        padre->peso = obtenerPesoTotal(izquierda); // El peso es el peso total del subárbol izquierdo
+        return padre;
+    }
+
+    /*****
+    * Nodo* construirArbol
+    ******
+    * Función recursiva auxiliar para dividir el texto inicial si supera w.
+    ******
+    * Input:
+    * std::string str : Texto a dividir.
+    * int limite_w : Límite de caracteres por hoja.
+    ******
+    * Returns:
+    * Nodo*, Puntero a la raíz del subárbol generado.
+    *****/
+    Nodo* construirArbol(std::string str, int limite_w){
+        if (str.length() <= limite_w){
+            return crearHoja(str);
+        }
+        int mitad = str.length() / 2;
+        Nodo* izq = construirArbol(str.substr(0, mitad), limite_w);
+        Nodo* der = construirArbol(str.substr(mitad), limite_w);
+        return unir(izq, der);
     }
 
     /*****
@@ -122,6 +126,173 @@ public:
     }
 
     /*****
+    * int largoSubarbol
+    ******
+    * Calcula la longitud total del texto contenido en todas las hojas de un subárbol dado.
+    ******
+    * Input:
+    * Nodo* nodo : Puntero al nodo raíz del subárbol.
+    ******
+    * Returns:
+    * int, Cantidad total de caracteres en el subárbol.
+    *****/
+    int largoSubarbol(Nodo* nodo){
+        if(nodo == nullptr){
+            return 0;
+        }
+        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
+            return nodo->texto.length();
+        }
+        return largoSubarbol(nodo->izquierda) + largoSubarbol(nodo->derecha);
+    }
+
+     /*****
+    * void imprimirNodos
+    ******
+    * Recorre el árbol recursivamente para imprimir el texto de las hojas y contar los caracteres.
+    ******
+    * Input:
+    * Nodo* nodo : Puntero al nodo actual en el recorrido.
+    * int& caracteresImpresos : Referencia al contador de caracteres impresos.
+    ******
+    * Returns:
+    * void, No retorna valor.
+    *****/ 
+    void imprimirNodos(Nodo* nodo, int& caracteresImpresos){
+        if(nodo == nullptr){
+            return;
+        }
+        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
+           std::cout << nodo->texto;
+            caracteresImpresos += nodo->texto.length();
+            return;
+        }
+        imprimirNodos(nodo->izquierda, caracteresImpresos);
+        imprimirNodos(nodo->derecha, caracteresImpresos);
+    }
+
+    /*****
+    * void invertirRecursivo
+    ******
+    * Recorre el árbol para invertir el texto de cada hoja y luego intercambia los hijos de cada nodo. (Solución Problema 4)
+    ******
+    * Input:
+    * Nodo* nodo : Puntero al nodo actual a procesar.
+    ******
+    * Returns:
+    * void, No retorna valor.
+    *****/
+    void invertirRecursivo(Nodo* nodo){
+        if(nodo == nullptr){
+            return;
+        }
+
+        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
+            std::string invertido = "";
+            for(int i = (int)nodo->texto.length() - 1; i >= 0; i--){
+                invertido += nodo->texto[i];
+            }
+            nodo->texto = invertido;
+            return;
+        }
+
+        invertirRecursivo(nodo->izquierda);
+        invertirRecursivo(nodo->derecha);
+
+        // Intercambiar hijos
+        Nodo* temp = nodo->izquierda;
+        nodo->izquierda = nodo->derecha;
+        nodo->derecha = temp;
+
+        // Actualizar el peso del nodo padre (es vital porque el subárbol izquierdo cambió)
+        nodo->peso = largoSubarbol(nodo->izquierda);
+    }
+
+    /*****
+    * Nodo* eliminarRecursivo
+    ******
+    * Función auxiliar que elimina un carácter, reestructura si un nodo queda vacío y ajusta pesos. (Solución Problema 5)
+    ******
+    * Input:
+    * Nodo* nodo : Nodo actual.
+    * int posicion : Posición a eliminar.
+    ******
+    * Returns:
+    * Nodo*, La nueva raíz del subárbol tras la eliminación.
+    *****/
+    Nodo* eliminarRecursivo(Nodo* nodo, int posicion) {
+        if (nodo == nullptr) return nullptr;
+
+        // Si es nodo hoja
+        if (nodo->izquierda == nullptr && nodo->derecha == nullptr) {
+            if (posicion >= 0 && posicion < nodo->texto.length()) {
+                nodo->texto.erase(posicion, 1);
+                nodo->peso = nodo->texto.length();
+                
+                // Si la hoja se queda sin texto, la eliminamos para no dejar basura.
+                if (nodo->texto.empty()) {
+                    delete nodo;
+                    return nullptr; 
+                }
+            }
+            return nodo;
+        }
+
+        // Búsqueda en nodos internos
+        if (posicion < nodo->peso && nodo->izquierda != nullptr) {
+            nodo->izquierda = eliminarRecursivo(nodo->izquierda, posicion);
+            if (nodo->izquierda) nodo->izquierda->padre = nodo;
+        } else if (nodo->derecha != nullptr) {
+            nodo->derecha = eliminarRecursivo(nodo->derecha, posicion - nodo->peso);
+            if (nodo->derecha) nodo->derecha->padre = nodo;
+        }
+
+        // Reestructuración si un hijo fue eliminado
+        if (nodo->izquierda == nullptr && nodo->derecha == nullptr) {
+            delete nodo;
+            return nullptr;
+        } else if (nodo->izquierda == nullptr) {
+            Nodo* temp = nodo->derecha;
+            temp->padre = nodo->padre;
+            delete nodo;
+            return temp;
+        } else if (nodo->derecha == nullptr) {
+            Nodo* temp = nodo->izquierda;
+            temp->padre = nodo->padre;
+            delete nodo;
+            return temp;
+        }
+
+        // Actualizar el peso obligatoriamente de abajo hacia arriba
+        nodo->peso = obtenerPesoTotal(nodo->izquierda);
+        return nodo;
+    }
+
+public:
+    /*****
+    * Linea Linea
+    ******
+    * Constructor que inicializa el árbol con una cadena de texto y establece el límite de tamaño w.
+    ******
+    * Input:
+    * std::string str : Cadena de texto inicial para el árbol.
+    * int w : Peso máximo permitido para los nodos hoja.
+    ******
+    * Returns:
+    * void, No aplica retorno para constructores.
+    *****/
+    Linea(std::string str, int w){
+        this->w = w;
+        if(str.empty()){
+            raiz = nullptr;
+        } 
+        else{
+            //Genera el árbol dividido si es necesario
+            raiz = construirArbol(str, w); 
+        }
+    }
+
+    /*****
     * Linea Linea
     ******
     * Constructor que inicializa el árbol con una cadena de texto y establece el límite de tamaño w.
@@ -136,7 +307,7 @@ public:
     ~Linea(){
         destruir(raiz);
     }
-
+    
     /*****
     * void insertar
     ******
@@ -150,8 +321,13 @@ public:
     * void, No retorna valor.
     *****/
     void insertar(int posicion, char caracter){
+       if(raiz == nullptr){
+            std::string s(1, caracter);
+            raiz = crearHoja(s);
+            return;
+        }
+        
         Nodo* actual = raiz;
-
         while (actual->izquierda || actual->derecha){
              if (posicion < actual->peso && actual->izquierda) {
                 actual->peso++; 
@@ -230,95 +406,6 @@ public:
     }
 
     /*****
-    * int largoSubarbol
-    ******
-    * Calcula la longitud total del texto contenido en todas las hojas de un subárbol dado.
-    ******
-    * Input:
-    * Nodo* nodo : Puntero al nodo raíz del subárbol.
-    ******
-    * Returns:
-    * int, Cantidad total de caracteres en el subárbol.
-    *****/
-    int largoSubarbol(Nodo* nodo){
-        if(nodo == nullptr){
-            return 0;
-        }
-        
-        // nodo hoja
-        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
-            return nodo->texto.length();
-        }
-
-        return largoSubarbol(nodo->izquierda) +
-            largoSubarbol(nodo->derecha);
-    }
-
-   /*****
-    * void imprimirNodos
-    ******
-    * Recorre el árbol recursivamente para imprimir el texto de las hojas y contar los caracteres.
-    ******
-    * Input:
-    * Nodo* nodo : Puntero al nodo actual en el recorrido.
-    * int& caracteresImpresos : Referencia al contador de caracteres impresos.
-    ******
-    * Returns:
-    * void, No retorna valor.
-    *****/ 
-    void imprimirNodos(Nodo* nodo, int& caracteresImpresos){
-        if(nodo == nullptr){
-            return;
-        }
-
-        // si es hoja
-        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
-           std::cout << nodo->texto;
-            caracteresImpresos += nodo->texto.length();
-            return;
-        }
-
-        imprimirNodos(nodo->izquierda, caracteresImpresos);
-        imprimirNodos(nodo->derecha, caracteresImpresos);
-    }
-
-    /*****
-    * void invertirRecursivo
-    ******
-    * Recorre el árbol para invertir el texto de cada hoja y luego intercambia los hijos de cada nodo.
-    ******
-    * Input:
-    * Nodo* nodo : Puntero al nodo actual a procesar.
-    ******
-    * Returns:
-    * void, No retorna valor.
-    *****/
-    void invertirRecursivo(Nodo* nodo){
-        if(nodo == nullptr){
-            return;
-        }
-
-        // nodo hoja
-        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
-            std::string invertido = "";
-            
-            for(int i = (int)nodo->texto.length() - 1; i >= 0; i--){
-                invertido += nodo->texto[i];
-            }
-            nodo->texto = invertido;
-            return;
-        }
-
-        invertirRecursivo(nodo->izquierda);
-        invertirRecursivo(nodo->derecha);
-
-        // intercambiar hijos
-        Nodo* temp = nodo->izquierda;
-        nodo->izquierda = nodo->derecha;
-        nodo->derecha = temp;
-    }
-
-    /*****
     * void concatenar
     ******
     * Une la estructura actual con un árbol Linea proporcionado, agregándolo como hijo derecho en una nueva raíz.
@@ -393,8 +480,6 @@ public:
         return caracteresImpresos;
     }
 };
-
-
 
 void mostrarMenu() {
     cout << "\n===== MENU =====" << endl;
