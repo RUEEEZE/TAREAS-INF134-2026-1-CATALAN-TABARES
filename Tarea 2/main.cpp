@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-include namespace std;
 
 class Linea{
 private:
@@ -26,13 +25,15 @@ private:
     * Returns:
     * Nodo*, Puntero al nuevo nodo creado.
     *****/
-    Nodo* crearHoja(std::string texto){
+     Nodo* crearHoja(std::string texto){
+        
         Nodo* nuevo = new Nodo;
-        nuevo->izquierda = NULL;
-        nuevo->derecha = NULL;
-        nuevo->padre = NULL;
+        nuevo->izquierda = nullptr;
+        nuevo->derecha = nullptr;
+        nuevo->padre = nullptr;
         nuevo->texto = texto;
         nuevo->peso = texto.length();
+
         return nuevo;
     }
 
@@ -47,13 +48,15 @@ private:
     * Returns:
     * unsigned int, Suma total de los pesos del subárbol.
     *****/
-    unsigned int obtenerPesoTotal(Nodo* nodo){
-        if (nodo == NULL){
+    unsigned int obtenerPesoTotal(Nodo* nodo){ 
+
+        if(nodo == nullptr){
             return 0;
         }
-        if (nodo->izquierda == NULL && nodo->derecha == NULL){
+        if(nodo->izquierda == nullptr && nodo->derecha == nullptr){
             return nodo->peso;
         }
+
         return obtenerPesoTotal(nodo->izquierda) + obtenerPesoTotal(nodo->derecha);
     }
 
@@ -70,18 +73,23 @@ private:
     * Nodo*, Puntero al nuevo nodo padre creado.
     *****/
     Nodo* unir(Nodo* izquierda, Nodo* derecha){
+
         Nodo* padre = new Nodo;
         padre->izquierda = izquierda;
         padre->derecha = derecha;
-        padre->padre = NULL;
-        
-        if (izquierda) izquierda->padre = padre;
-        if (derecha) derecha->padre = padre;
-        
+        padre->padre = nullptr;
+        if(izquierda){
+            izquierda->padre = padre;
+        }
+        if(derecha){
+            derecha->padre = padre;
+        }
         padre->texto = "";
-        padre->peso = obtenerPesoTotal(izquierda); // El peso es el peso total del subárbol izquierdo
+        padre->peso = obtenerPesoTotal(izquierda);
+
         return padre;
     }
+
 
     /*****
     * Nodo* construirArbol
@@ -380,29 +388,8 @@ public:
     * void, No retorna valor.
     *****/
     void eliminar(int posicion){
-        Nodo* actual = raiz;
-        
-        while (actual->izquierda || actual->derecha) {
-            if (posicion < actual->peso && actual->izquierda) {
-                actual->peso--; 
-                actual = actual->izquierda;
-            } 
-            else{
-                posicion -= actual->peso;
-                actual = actual->derecha;
-            }
-        }
 
-        if (posicion >= 0 && posicion < actual->texto.length()){
-            std::string nuevoTexto = "";
-            for (int i = 0; i < actual->texto.length(); i++){
-                if (i != posicion){
-                    nuevoTexto += actual->texto[i];
-                }
-            }
-            actual->texto = nuevoTexto;
-            actual->peso--;
-        }
+        raiz = eliminarRecursivo(raiz, posicion);
     }
 
     /*****
@@ -442,7 +429,6 @@ public:
 
         this->raiz = nuevaRaiz;
 
-        // evitar double free
         linea->raiz = nullptr;
     }
 
@@ -495,11 +481,11 @@ void mostrarMenu() {
 int main(){
     std::string textoInicial;
     int w;
-    cout << "Ingrese texto inicial: ";
-    getline(cin, textoInicial);
+    std::cout << "Ingrese texto inicial: ";
+    std::getline(std::cin, textoInicial);
 
-    cout << "Ingrese valor de w: ";
-    cin >> w;
+    std::cout << "Ingrese valor de w: ";
+    std::cin >> w;
 
     cin.ignore();
 
@@ -508,62 +494,60 @@ int main(){
     
     while (opcion != 0){
         mostrarMenu();
-        cin >> opcion;
+        std::cin >> opcion;
         
         if (opcion == 1){
-            cout << "\nContenido actual:" << endl;
+            std::cout << "\nContenido actual:" << endl;
             linea.print();
-            cout << endl;
+            std::cout << endl;
         }
 
         else if (opcion == 2){
             int posicion;
             char caracter;
 
-            cout << "Posicion: ";
-            cin >> posicion;
+            std::cout << "Posicion: ";
+            std::cin >> posicion;
 
-            cout << "Caracter: ";
-            cin >> caracter;
-
+            std::cout << "Caracter: ";
+            std::cin >> caracter;
             linea.insertar(posicion, caracter);
-            cout << "Caracter insertado." << endl;
+            std::cout << "Caracter insertado." << std::endl;
         }
 
         else if (opcion == 3){
             int posicion;
 
-            cout << "Posicion a eliminar: ";
-            cin >> posicion;
+            std::cout << "Posicion a eliminar: ";
+            std::cin >> posicion;
 
             linea.eliminar(posicion);
-            cout << "Caracter eliminado." << endl;
+            std::cout << "Caracter eliminado." << std::endl;
         }
 
         else if (opcion == 4){
             linea.invertir();
-            cout << "Linea invertida." << endl;
+            std::cout << "Linea invertida." << std::endl;
         }
 
         else if (opcion == 5){
-            cin.ignore();
+            std::cin.ignore();
             std::string nuevoTexto;
 
-            cout << "Texto a concatenar: ";
-            getline(cin, nuevoTexto);
-
+            std::cout << "Texto a concatenar: ";
+            std::getline(std::cin, nuevoTexto);
             Linea* nuevaLinea = new Linea(nuevoTexto, w);
 
             linea.concatenar(nuevaLinea);
-            cout << "Concatenacion realizada." << endl;
+            std::cout << "Concatenacion realizada." << std::endl;
         }
 
         else if (opcion == 0){
-            cout << "Saliendo..." << endl;
+            std::cout << "Saliendo..." << std::endl;
         }
 
         else{
-            cout << "Opcion invalida." << endl;
+            std::cout << "Opcion invalida." << std::endl;
         }
     }
     
