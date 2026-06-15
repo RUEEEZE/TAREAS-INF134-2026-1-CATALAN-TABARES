@@ -25,6 +25,43 @@ struct Nodo {
     }
 };
 
+class Cola {
+private:
+    int* datos;
+    int frente;
+    int final;
+    int capacidad;
+
+public:
+
+    Cola(int tam) {
+        capacidad = tam;
+        datos = new int[capacidad];
+
+        frente = 0;
+        final = 0;
+    }
+
+    ~Cola() {
+        delete[] datos;
+    }
+
+    bool estaVacia() {
+        return frente == final;
+    }
+
+    void push(int valor) {
+        datos[final] = valor;
+        final++;
+    }
+
+    int pop() {
+        int valor = datos[frente];
+        frente++;
+        return valor;
+    }
+};
+
 /* ****
  * Class Grafo
  ******
@@ -151,18 +188,56 @@ public:
 
         delete[] grado;
     }
-};
+
+    bool tieneCiclo() {
+
+        int* grado = calcularGrado();
+
+        Cola cola(cantidadEdificios + 1);
 
         for(int i = 1; i <= cantidadEdificios; i++) {
 
-            cout << "Edificio "
-                << i
-                << " -> "
-                << grado[i]
-                << endl;
+            if(grado[i] == 0) {
+                cola.push(i);
+            }
+        }
+
+        int visitados = 0;
+
+        while(!cola.estaVacia()) {
+
+            int actual = cola.pop();
+
+            visitados++;
+
+            Nodo* vecino = adyacencia[actual];
+
+            while(vecino != nullptr) {
+
+                grado[vecino->destino]--;
+
+                if(grado[vecino->destino] == 0) {
+                    cola.push(vecino->destino);
+                }
+
+                vecino = vecino->siguiente;
+            }
         }
 
         delete[] grado;
+        return visitados != cantidadEdificios;
+    }
+
+    void probarCiclo() {
+
+        if(tieneCiclo()) {
+            cout << endl;
+            cout << "Hay ciclo" << endl;
+        }
+        else {
+            cout << endl;
+            cout << "No hay ciclo" << endl;
+        }
     }
 };
 
@@ -194,9 +269,12 @@ int main() {
         grafo.agregarArista(a, b);
     }
 
+
     grafo.imprimirGrafo();
 
     grafo.imprimirGrado();
+
+    grafo.probarCiclo();
 
     cout << "Lectura completada" << endl;
 
