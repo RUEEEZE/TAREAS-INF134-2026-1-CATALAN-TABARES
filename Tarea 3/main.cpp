@@ -97,6 +97,58 @@ void merge(Edificio* arr, int inicio, int medio, int fin){
     delete[] R;
 }
 
+/******
+* void mergeSort
+******
+* Algoritmo de ordenamiento para los edificios (por tiempo y luego por ID)
+******
+* Input:
+* Edificio* arr : Arreglo a ordenar
+* int inicio : Índice inicial
+* int fin : Índice final
+******
+* Returns:
+* void, ordena el arreglo en su lugar
+******/
+void mergeSort(Edificio* arr, int inicio, int fin){
+    if (inicio >= fin) return;
+    int medio = inicio + (fin - inicio) / 2;
+    
+    mergeSort(arr, inicio, medio);
+    mergeSort(arr, medio + 1, fin);
+    merge(arr, inicio, medio, fin);
+}
+
+/******
+* int calcularRaiz
+******
+* Calcula la raíz cuadrada entera mediante búsqueda binaria
+******
+* Input:
+* int x : Número al que se le aplicará la raíz
+******
+* Returns:
+* int, la raíz cuadrada entera calculada
+******/
+int calcularRaiz(int x){
+    if (x == 0 || x == 1){
+        return x;
+    }
+    
+    int inicio = 1, fin = x, respuesta = 0;
+    while (inicio <= fin){
+        int medio = inicio + (fin - inicio) / 2;
+        if(medio <= x / medio){
+            respuesta = medio;
+            inicio = medio + 1;
+        }
+        else{
+            fin = medio - 1;
+        }
+    }
+    return respuesta;
+}
+
 class Cola {
 private:
     int* datos;
