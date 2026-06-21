@@ -25,6 +25,78 @@ struct Nodo {
     }
 };
 
+/******
+* Struct Edificio
+******
+* Almacena datos para ordenar la salida
+******
+* Input:
+* Ninguno
+******
+* Returns:
+* Ninguno
+******/
+struct Edificio{
+    int id;
+    int tiempo_inicio;
+};
+
+/******
+* void merge
+******
+* Función auxiliar para mezclar sub-arreglos en mergeSort
+******
+* Input:
+* Edificio* arr : Arreglo a ordenar
+* int inicio : Índice de inicio
+* int medio : Índice central
+* int fin : Índice de término
+******
+* Returns:
+* void, modifica el arreglo original
+******/
+void merge(Edificio* arr, int inicio, int medio, int fin){
+    int n1 = medio - inicio + 1;
+    int n2 = fin = medio;
+    Edificio* L = new Edificio[n1];
+    Edificio* R = new Edificio[n2];
+    
+    for (int i = 0; i < n1; i++){
+        L[i] = arr[inicio + i];
+    }
+    for (int j = 0; j < n2; j++){
+        R[j] = arr[medio + 1 + j];
+    }
+    
+    int i = 0, j = 0, k = inicio;
+    while (i < n1 && j < n2){
+        bool L_menor = false;
+        if (L[i].tiempo_inicio < R[j].tiempo_inicio){
+            L_menor = true;
+        }
+        else if (L[i].tiempo_inicio == R[j].tiempo_inicio && L[i].id < R[j].id){
+            L_menor = true;
+        }
+        
+        if (L_menor){
+            arr[k++] = L[i++];
+        }
+        else{
+            arr[k++] = R[j++];
+        }
+    }
+    
+    while (i < n1){
+        arr[k++] = L[i++];
+    }
+    while (j < n2){
+        arr[k++] = R[j++];
+    }
+    
+    delete[] L;
+    delete[] R;
+}
+
 class Cola {
 private:
     int* datos;
