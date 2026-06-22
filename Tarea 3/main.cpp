@@ -111,7 +111,9 @@ void merge(Edificio* arr, int inicio, int medio, int fin){
 * void, ordena el arreglo en su lugar
 ******/
 void mergeSort(Edificio* arr, int inicio, int fin){
-    if (inicio >= fin) return;
+    if(inicio >= fin){
+        return;
+    }
     int medio = inicio + (fin - inicio) / 2;
     
     mergeSort(arr, inicio, medio);
@@ -131,12 +133,12 @@ void mergeSort(Edificio* arr, int inicio, int fin){
 * int, la raíz cuadrada entera calculada
 ******/
 int calcularRaiz(int x){
-    if (x == 0 || x == 1){
+    if(x == 0 || x == 1){
         return x;
     }
     
     int inicio = 1, fin = x, respuesta = 0;
-    while (inicio <= fin){
+    while(inicio <= fin){
         int medio = inicio + (fin - inicio) / 2;
         if(medio <= x / medio){
             respuesta = medio;
@@ -158,7 +160,18 @@ private:
 
 public:
 
-    Cola(int tam) {
+    /******
+    * Constructor Cola
+    ******
+    * Inicializa la cola con una capacidad máxima
+    ******
+    * Input:
+    * int tam : Capacidad máxima de la cola
+    ******
+    * Returns:
+    * Ninguno
+    ******/
+     Cola(int tam) {
         capacidad = tam;
         datos = new int[capacidad];
 
@@ -232,6 +245,147 @@ public:
     void cambiarTiempo(int edificio, int nuevoTiempo) {
         tiempos[edificio] = nuevoTiempo;
     }
+
+    void agregarArista(int origen, int destino){
+         Nodo* nuevo = new Nodo(destino);
+         nuevo->siguiente = adyacencia[origen];
+         adyacencia[origen] = nuevo;
+}
+   /******
+    * void eliminarArista
+    ******
+    * Elimina una dependencia específica de la lista de adyacencia
+    ******
+    * Input:
+    * int origen : ID del edificio origen
+    * int destino : ID del edificio que ya no es prerrequisito
+    ******
+    * Returns:
+    * void, actualiza la lista de adyacencia
+    ******/
+    void eliminarArista(int origen, int destino){
+        Nodo* actual = adyacencia[origen];
+        Nodo* anterior = nullptr;
+        
+        while (actual != nullptr && actual->destino != destino){
+            anterior = actual;
+            actual = actual->siguiente;
+        }
+        
+        if(actual != nullptr){
+            if(anterior == nullptr){
+                adyacencia[origen] = actual->siguiente;
+            }
+            else {
+                anterior->siguiente = actual->siguiente;
+            }
+            delete actual;
+        }
+    }
+
+    /******
+    * int* calcularGrado
+    ******
+    * Calcula la cantidad de prerrequisitos que tiene cada edificio
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * int*, Arreglo dinámico con los grados de entrada
+    ******/
+    int* calcularGrado() {
+        int* grado = new int[cantidadEdificios + 1];
+        for(int i = 0; i <= cantidadEdificios; i++){
+            grado[i] = 0;
+        }
+        for(int i = 1; i <= cantidadEdificios; i++){
+            Nodo* actual = adyacencia[i];
+            while(actual != nullptr){
+                grado[actual->destino]++;
+                actual = actual->siguiente;
+            }
+        }
+        return grado;
+    }
+
+    /******
+    * void procesarParche
+    ******
+    * Verifica ciclos, calcula los tiempos de inicio y despliega la salida
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * void, Imprime el orden por consola
+    ******/
+    void procesarParche(){
+        int* grado = calcularGrado();
+        
+        int* tiempo_inicio = new int[cantidadEdificios + 1];
+        for(int i = 0; i <= cantidadEdificios; i++){
+            tiempo_inicio[i] = 0;
+        }
+
+        Cola cola(cantidadEdificios + 1);
+        for(int i = 1; i <= cantidadEdificios; i++){
+            if(grado[i] == 0){
+                cola.push(i);
+            }
+        }
+
+        int visitados = 0;
+        int tiempo_total = 0;
+
+        while(!cola.estaVacia()){
+            int actual = cola.pop();
+            visitados++;
+
+            int tiempo_fin = tiempo_inicio[actual] + tiempos[actual];
+            if(tiempo_fin > tiempo_total){
+                tiempo_total = tiempo_fin;
+            }
+
+            Nodo* vecino = adyacencia[actual];
+            while(vecino != nullptr){
+                if(tiempo_fin > tiempo_inicio[vecino->destino]){
+                    tiempo_inicio[vecino->destino] = tiempo_fin;
+                }
+
+                grado[vecino->destino]--;
+                if(grado[vecino->destino] == 0){
+                    cola.push(vecino->destino);
+                }
+                vecino = vecino->siguiente;
+            }
+        }
+
+        // Si la cantidad de visitados no coincide, hay un ciclo
+        if (visitados < cantidadEdificios){
+            cout << -1 << "\n";
+        }
+        else{
+            Edificio* orden = new Edificio[cantidadEdificios];
+            for(int i = 1; i <= cantidadEdificios; i++){
+                orden[i-1].id = i;
+                orden[i-1].tiempo_inicio = tiempo_inicio[i];
+            }
+
+            mergeSort(orden, 0, cantidadEdificios - 1);
+
+            for(int i = 0; i < cantidadEdificios; i++){
+                cout << orden[i].id << (i == cantidadEdificios - 1 ? "" : " ");
+            }
+            cout << "\n" << tiempo_total << "\n";
+
+            delete[] orden;
+        }
+
+        delete[] grado;
+        delete[] tiempo_inicio;
+    }
+};
 
     int obtenerTiempo(int edificio) {
         return tiempos[edificio];
