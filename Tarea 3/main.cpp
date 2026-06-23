@@ -236,6 +236,10 @@ public:
     ******/
     void agregarArista(int origen, int destino) {
 
+        if(existeArista(origen, destino)) {
+            return;
+        }
+
         Nodo* nuevo = new Nodo(destino);
 
         nuevo->siguiente = adyacencia[origen];
@@ -793,7 +797,7 @@ int main(){
             int a, b;
             cin >> a >> b;
     
-            grafo.agregarArista(a, b);
+            grafo.agregarArista(a,b);
         }
         else if(tipo == 3){
             int a, b;
