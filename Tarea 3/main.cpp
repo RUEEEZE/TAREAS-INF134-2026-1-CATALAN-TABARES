@@ -139,6 +139,17 @@ private:
 
 public:
 
+    /******
+    * Grafo Grafo
+    ******
+    * Constructor de la clase Grafo. Inicializa arreglos de tiempos y adyacencias.
+    ******
+    * Input:
+    * int n : Cantidad total de edificios en el grafo
+    ******
+    * Returns:
+    * Ninguno
+    ******/
     Grafo(int n) {
         cantidadEdificios = n;
 
@@ -152,6 +163,17 @@ public:
         }
     }
 
+    /******
+    * ~Grafo ~Grafo
+    ******
+    * Destructor de la clase Grafo. Libera toda la memoria dinámica utilizada.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * Ninguno (Destructor)
+    ******/
     ~Grafo() {
 
         for(int i = 1; i <= cantidadEdificios; i++) {
@@ -169,14 +191,49 @@ public:
         delete[] tiempos;
     }
 
+    /******
+    * void cambiarTiempo
+    ******
+    * Actualiza el tiempo de construcción de un edificio específico.
+    ******
+    * Input:
+    * int edificio : ID del edificio a modificar
+    * int nuevoTiempo : Nueva duración de la construcción
+    ******
+    * Returns:
+    * void, actualiza el arreglo de tiempos internamente
+    ******/
     void cambiarTiempo(int edificio, int nuevoTiempo) {
         tiempos[edificio] = nuevoTiempo;
     }
 
+    /******
+    * int obtenerTiempo
+    ******
+    * Retorna el tiempo de construcción asignado a un edificio.
+    ******
+    * Input:
+    * int edificio : ID del edificio consultado
+    ******
+    * Returns:
+    * int, la duración de la construcción de dicho edificio
+    ******/
     int obtenerTiempo(int edificio) {
         return tiempos[edificio];
     }
 
+    /******
+    * void agregarArista
+    ******
+    * Agrega una dependencia indicando que 'origen' debe construirse antes que 'destino'.
+    ******
+    * Input:
+    * int origen : ID del edificio prerrequisito
+    * int destino : ID del edificio que depende del origen
+    ******
+    * Returns:
+    * void, inserta un nuevo nodo en la lista de adyacencia
+    ******/
     void agregarArista(int origen, int destino) {
 
         Nodo* nuevo = new Nodo(destino);
@@ -186,6 +243,17 @@ public:
         adyacencia[origen] = nuevo;
     }
 
+    /******
+    * void imprimirGrafo
+    ******
+    * Imprime por consola la lista de adyacencia del grafo con fines de depuración.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * void, imprime los datos en pantalla
+    ******/
     void imprimirGrafo() {
 
         for(int i = 1; i <= cantidadEdificios; i++) {
@@ -203,14 +271,47 @@ public:
         }
     }
 
+    /******
+    * Nodo* obtenerLista
+    ******
+    * Retorna el puntero inicial a la lista de vecinos de un edificio.
+    ******
+    * Input:
+    * int edificio : ID del edificio consultado
+    ******
+    * Returns:
+    * Nodo*, puntero al primer elemento de la lista enlazada de vecinos
+    ******/
     Nodo* obtenerLista(int edificio) {
         return adyacencia[edificio];
     }
 
+    /******
+    * int obtenerCantidadEdificios
+    ******
+    * Retorna el número total de edificios registrados en el grafo.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * int, cantidad de nodos (edificios) del grafo
+    ******/
     int obtenerCantidadEdificios() {
         return cantidadEdificios;
     }
 
+    /******
+    * int* calcularGrado
+    ******
+    * Calcula la cantidad de prerrequisitos (grado de entrada) de todos los edificios.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * int*, arreglo dinámico con los grados de entrada de cada nodo
+    ******/
     int* calcularGrado() {
 
         int* grado = new int[cantidadEdificios + 1];
@@ -234,6 +335,17 @@ public:
         return grado;
     }
 
+    /******
+    * void imprimirGrado
+    ******
+    * Imprime por consola los grados de entrada de cada edificio.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * void, imprime datos de depuración en pantalla
+    ******/
     void imprimirGrado() {
 
         int* grado = calcularGrado();
@@ -253,6 +365,17 @@ public:
         delete[] grado;
     }
 
+    /******
+    * bool tieneCiclo
+    ******
+    * Verifica si existe un ciclo de dependencias en el grafo usando Kahn's Algorithm.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * bool, retorna true si hay un ciclo, false en caso contrario
+    ******/
     bool tieneCiclo() {
 
         int* grado = calcularGrado();
@@ -292,6 +415,17 @@ public:
         return visitados != cantidadEdificios;
     }
 
+    /******
+    * void probarCiclo
+    ******
+    * Imprime un mensaje indicando si el grafo actual posee un ciclo o no.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * void, imprime mensaje por consola
+    ******/
     void probarCiclo() {
 
         if(tieneCiclo()) {
@@ -304,6 +438,18 @@ public:
         }
     }
 
+    /******
+    * void eliminarArista
+    ******
+    * Busca y elimina una dependencia específica entre dos edificios.
+    ******
+    * Input:
+    * int origen : ID del edificio prerrequisito
+    * int destino : ID del edificio que ya no depende del origen
+    ******
+    * Returns:
+    * void, actualiza la lista enlazada quitando el nodo correspondiente
+    ******/
     void eliminarArista(int origen, int destino) {
 
         Nodo* actual = adyacencia[origen];
@@ -328,6 +474,18 @@ public:
         }
     }
 
+    /******
+    * bool existeArista
+    ******
+    * Verifica si una dependencia específica existe en el grafo actual.
+    ******
+    * Input:
+    * int origen : ID del edificio prerrequisito
+    * int destino : ID del edificio dependiente
+    ******
+    * Returns:
+    * bool, true si la arista existe, false en caso contrario
+    ******/
     bool existeArista(int origen, int destino) {
 
         Nodo* actual = adyacencia[origen];
@@ -344,6 +502,17 @@ public:
         return false;
     }
 
+    /******
+    * int* ordenTopologico
+    ******
+    * Genera un orden de construcción válido utilizando un ordenamiento topológico.
+    ******
+    * Input:
+    * int& cantidad : Referencia para guardar la cantidad de nodos ordenados
+    ******
+    * Returns:
+    * int*, arreglo con el orden. Retorna nullptr si hay un ciclo.
+    ******/
     int* ordenTopologico(int& cantidad) {
 
         int* grado = calcularGrado();
@@ -392,6 +561,17 @@ public:
         return orden;
     }
 
+    /******
+    * void imprimirOrdenConstruccion
+    ******
+    * Imprime por consola el orden topológico directo sin reordenamiento posterior.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * void, imprime el arreglo por consola o -1 si falla
+    ******/
     void imprimirOrdenConstruccion() {
 
         int cantidad;
@@ -417,6 +597,17 @@ public:
         delete[] orden;
     }
 
+    /******
+    * int calcularTiempoTotal
+    ******
+    * Calcula el tiempo total necesario para terminar todos los edificios en el orden actual.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * int, cantidad de tiempo que dura la ruta crítica del grafo
+    ******/
     int calcularTiempoTotal() {
 
         int cantidad;
@@ -477,6 +668,17 @@ public:
     }
 
 
+    /******
+    * void imprimirEstado
+    ******
+    * Verifica ciclos, calcula tiempos, ordena los edificios según tiempo de inicio e imprime el parche.
+    ******
+    * Input:
+    * Ninguno
+    ******
+    * Returns:
+    * void, salida por consola con el formato exigido para los parches
+    ******/
     void imprimirEstado(){
         int cantidad;
         int* orden = ordenTopologico(cantidad);
@@ -489,7 +691,7 @@ public:
         int* inicio = new int[cantidadEdificios + 1];
         int* termino = new int[cantidadEdificios + 1];
 
-        for(int i = 1; i <= cantidadEdificios; i++) 
+        for(int i = 1; i <= cantidadEdificios; i++){
             inicio[i] = 0;
             termino[i] = tiempos[i];
         }
@@ -539,16 +741,16 @@ int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    // Evita errores si el archivo está vacío
-    if (!(cin >> n >> m >> q)){
-        return 0;
-    }
-    
     int n;
     int m;
     int q;
 
     cin >> n >> m >> q;
+
+    // Evita errores si el archivo está vacío
+    if (!(cin >> n >> m >> q)){
+        return 0;
+    }
     
     Grafo grafo(n);
     
