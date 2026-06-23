@@ -734,6 +734,7 @@ public:
         delete[] orden;
         delete[] arregloOrdenar;
     }
+};
 
 int main(){
 
@@ -744,8 +745,6 @@ int main(){
     int n;
     int m;
     int q;
-
-    cin >> n >> m >> q;
 
     // Evita errores si el archivo está vacío
     if (!(cin >> n >> m >> q)){
