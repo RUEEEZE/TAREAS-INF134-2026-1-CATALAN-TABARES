@@ -533,73 +533,79 @@ public:
         delete[] arregloOrdenar;
     }
 
-int main() {
+int main(){
 
+    // Optimización para evitar exceder el límite de 1 segundo
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    // Evita errores si el archivo está vacío
+    if (!(cin >> n >> m >> q)){
+        return 0;
+    }
+    
     int n;
     int m;
     int q;
 
-cin >> n >> m >> q;
-
-Grafo grafo(n);
-
-// leer tiempos
-for(int i = 1; i <= n; i++) {
-    int tiempo;
-    cin >> tiempo;
-    grafo.cambiarTiempo(i, tiempo);
-}
-
-// leer aristas iniciales
-for(int i = 0; i < m; i++) {
-    int a, b;
-    cin >> a >> b;
-    grafo.agregarArista(a, b);
-}
-
-// imprimir estado inicial
-grafo.imprimirEstado();
-
-// calcular raíz de q
-int bloque = 1;
-
-while(bloque * bloque < q) {
-    bloque++;
-}
-
-// leer consultas
-for(int i = 1; i <= q; i++) {
-
-    int tipo;
-    cin >> tipo;
-
-    if(tipo == 1) {
-
-        int edificio, tiempo;
-        cin >> edificio >> tiempo;
-
-        grafo.cambiarTiempo(edificio, tiempo);
+    cin >> n >> m >> q;
+    
+    Grafo grafo(n);
+    
+    // leer tiempos
+    for(int i = 1; i <= n; i++) {
+        int tiempo;
+        cin >> tiempo;
+        grafo.cambiarTiempo(i, tiempo);
     }
-
-    else if(tipo == 2) {
-
+    
+    // leer aristas iniciales
+    for(int i = 0; i < m; i++) {
         int a, b;
         cin >> a >> b;
-
         grafo.agregarArista(a, b);
     }
-
-    else if(tipo == 3) {
-
-        int a, b;
-        cin >> a >> b;
-
-        grafo.eliminarArista(a, b);
+    
+    // imprimir estado inicial
+    grafo.imprimirEstado();
+    
+    // calcular raíz de q
+    int bloque = 1;
+    
+    while(bloque * bloque < q) {
+        bloque++;
+    }
+    
+    // leer consultas
+    for(int i = 1; i <= q; i++) {
+    
+        int tipo;
+        cin >> tipo;
+    
+        if(tipo == 1){
+            int edificio, tiempo;
+            cin >> edificio >> tiempo;
+    
+            grafo.cambiarTiempo(edificio, tiempo);
+        }
+        else if(tipo == 2){
+            int a, b;
+            cin >> a >> b;
+    
+            grafo.agregarArista(a, b);
+        }
+        else if(tipo == 3){
+            int a, b;
+            cin >> a >> b;
+    
+            grafo.eliminarArista(a, b);
+        }
+    
+        // cada sqrt(q) consultas
+        if(i % bloque == 0){
+            grafo.imprimirEstado();
+        }
     }
 
-    // cada sqrt(q) consultas
-    if(i % bloque == 0) {
-        grafo.imprimirEstado();
-    }
-}
+    return 0;
 }
