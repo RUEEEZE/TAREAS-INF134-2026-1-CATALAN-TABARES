@@ -1,0 +1,8 @@
+all:
+	g++ -O3 main.cpp -o tarea3
+
+run:
+	./tarea3
+
+clean:
+	rm -f tarea3
