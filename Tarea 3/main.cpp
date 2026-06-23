@@ -5,6 +5,70 @@
 using namespace std;
 
 /* ****
+ * Struct Edificio
+ ******
+ * Almacena id y tiempo de inicio para ordenamiento
+ **** */
+struct Edificio {
+    int id;
+    int tiempo_inicio;
+};
+
+/* ****
+ * void merge
+ ******
+ * Mezcla dos subarreglos ordenados
+ **** */
+void merge(Edificio* arr, int inicio, int medio, int fin){
+    int n1 = medio - inicio + 1;
+    int n2 = fin - medio;
+    Edificio* L = new Edificio[n1];
+    Edificio* R = new Edificio[n2];
+    
+    for(int i = 0; i < n1; i++){
+        L[i] = arr[inicio + i];
+    }
+    for (int j = 0; j < n2; j++){
+        R[j] = arr[medio + 1 + j];
+    }
+    
+    int i = 0, j = 0, k = inicio;
+    while (i < n1 && j < n2){
+        if (L[i].tiempo_inicio < R[j].tiempo_inicio || (L[i].tiempo_inicio == R[j].tiempo_inicio && L[i].id < R[j].id)){
+            arr[k++] = L[i++];
+        }
+        else{
+            arr[k++] = R[j++];
+        }
+    }
+    
+    while (i < n1){
+        arr[k++] = L[i++];
+    }
+    while (j < n2){
+        arr[k++] = R[j++];
+    }
+    delete[] L;
+    delete[] R;
+}
+
+/* ****
+ * void mergeSort
+ ******
+ * Algoritmo de ordenamiento recursivo
+ **** */
+void mergeSort(Edificio* arr, int inicio, int fin){
+    if (inicio >= fin){
+        return;
+    }
+    
+    int medio = inicio + (fin - inicio) / 2;
+    mergeSort(arr, inicio, medio);
+    mergeSort(arr, medio + 1, fin);
+    merge(arr, inicio, medio, fin);
+}
+
+/* ****
  * Struct Nodo
  ******
  * Nodo para lista de adyacencia
