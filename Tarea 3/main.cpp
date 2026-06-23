@@ -477,20 +477,61 @@ public:
     }
 
 
-    void imprimirEstado() {
+    void imprimirEstado(){
+        int cantidad;
+        int* orden = ordenTopologico(cantidad);
 
-        if(tieneCiclo()) {
-
+        if(orden == nullptr){
             cout << -1 << endl;
             return;
         }
 
-        imprimirOrdenConstruccion();
+        int* inicio = new int[cantidadEdificios + 1];
+        int* termino = new int[cantidadEdificios + 1];
 
-        cout << calcularTiempoTotal() << endl;
+        for(int i = 1; i <= cantidadEdificios; i++) 
+            inicio[i] = 0;
+            termino[i] = tiempos[i];
+        }
+
+        for(int k = 0; k < cantidad; k++){
+            int actual = orden[k];
+            Nodo* vecino = adyacencia[actual];
+
+            while(vecino != nullptr){
+                int siguiente = vecino->destino;
+                if(termino[actual] > inicio[siguiente]){
+                    inicio[siguiente] = termino[actual];
+                    termino[siguiente] = inicio[siguiente] + tiempos[siguiente];
+                }
+                vecino = vecino->siguiente;
+            }
+        }
+
+        int tiempoMaximo = 0;
+        for(int i = 1; i <= cantidadEdificios; i++){
+            if(termino[i] > tiempoMaximo) tiempoMaximo = termino[i];
+        }
+
+        Edificio* arregloOrdenar = new Edificio[cantidad];
+        for(int k = 0; k < cantidad; k++){
+            int id_edificio = orden[k];
+            arregloOrdenar[k].id = id_edificio;
+            arregloOrdenar[k].tiempo_inicio = inicio[id_edificio];
+        }
+
+        mergeSort(arregloOrdenar, 0, cantidad - 1);
+        for(int i = 0; i < cantidad; i++){
+            cout << arregloOrdenar[i].id;
+            if(i < cantidad - 1) cout << " ";
+        }
+        cout << endl << tiempoMaximo << endl;
+
+        delete[] inicio;
+        delete[] termino;
+        delete[] orden;
+        delete[] arregloOrdenar;
     }
-
-};
 
 int main() {
 
